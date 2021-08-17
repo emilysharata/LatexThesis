@@ -1,0 +1,110 @@
+\documentclass[12pt, oneside]{report}
+
+\usepackage[margin=2.5cm]{geometry}
+\linespread{1.5}
+\usepackage{hyperref}
+\usepackage{mathptmx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+%\usepackage[style=authoryear, defernumbers=true, backend=biber,dashed=false, maxnames=999,maxcitenames=2,giveninits=true,urldate=long,uniquename=false,uniquelist=false]{biblatex}
+\usepackage[
+  sorting=none,
+  backend=biber,
+  style=ieee,
+  citestyle=numeric-comp
+]{biblatex}
+
+\addbibresource{References.bib}
+%\addbibresource{biblio.bib}
+
+%% pretty captions
+\usepackage{caption}
+\usepackage{subcaption}
+%%% allows you to create Rules, Definitions, Lemmas, Theorems etc.
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[]{algorithm2e}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{Rule}{Rule}
+\numberwithin{definition}{chapter}
+\numberwithin{theorem}{chapter}  
+\numberwithin{lemma}{chapter}  
+\numberwithin{Rule}{chapter}  
+\numberwithin{equation}{chapter} 
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
+ \usepackage[super]{nth} 
+ 
+\usepackage{graphicx,graphics}
+\usepackage{wrapfig}
+\usepackage{placeins}
+\usepackage{pdfpages}
+\usepackage{attachfile2}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{csquotes}
+
+\usepackage{fancyhdr}
+%\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+%\renewcommand{\footrulewidth}{0.4pt}
+\fancyhead{}
+\fancyhead[L]{SHORTENED TITLE} %%% CHANGE AS APPROPRIATE (you may need to use a shortened form of the title)
+\fancyhead[R]{Student ID: .......} %%% CHANGE AS APPROPRIATE
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+
+\usepackage{titlesec}
+\titlespacing{\chapter}{0pt}{*4}{*2.5}
+
+\titleformat{\chapter}{\normalfont\huge\bf}{\thechapter}{20pt}{\huge\bf}
+%% prevents Chapter 1 (then new line and Introduction) - turns into 1. Introduction
+
+
+%% Call your references "References" rather than Bibliography, then also allow for a separate Bibliography if needed.
+
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map{
+      \perdatasource{references.bib}
+      \step[fieldset=keywords, fieldvalue={, primary}, append]
+    }
+    \map{
+      \perdatasource{biblio.bib}
+      \step[fieldset=keywords, fieldvalue={, secondary}, append]
+    }
+  }
+}
+\input{Formatting}
+\setcounter{tocdepth}{1} % allow only sections (not subsections in table of contents)
+
+\begin{document}
+\input{Title_page}
+\newpage
+\input{Acknowledgements}
+\input{Abstract} %% any other "Front matter" should go here before the table of contents - format in a style similar to the file Abstract.tex
+\tableofcontents 
+%\listoftables
+% You don't actually have any tables so far...
+\listoffigures
+\addtocontents{toc}{~\hfill\textbf{Page}\par} % comment this line out if you want to remove "Page"
+\input{Introduction}% standard chapter format
+\input{Research_Methodology.tex}
+\input{software_and_tools}
+\input{techniques}
+\input{dataset.tex}
+\input{green_classification}
+\input{Universal_sentence_encoder}
+\input{Results.tex}
+\input{Conclusion.tex}
+\vfill
+
+\printbibliography[title=References]\addcontentsline{toc}{chapter}{References}
+
+
+\end{document}

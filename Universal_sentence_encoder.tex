@@ -1,0 +1,164 @@
+\section{Job activity summarizing and skill assessment}
+\label{sec:activites}
+
+With ever increasing amounts of textual data available on the Internet, data and computer scientists have focused on developing text mining techniques that require little to no training data. Transfer learning has become a fixture in NLP. This means that the knowledge understood from one model can be applied to a target task downstream, as shown in Fig.~\ref{fig:transferlearning}.
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=0.5\textwidth]{figures/transferlearning.pdf}
+    \caption{
+    An illustration of the concept of transfer learning. 
+    }
+\label{fig:transferlearning}
+\end{figure}
+
+
+This concept has been one of the main drivers in NLP development as one of the main benefits of using transfer learning is that it reduces the amount of annotated data needed for training a new model. Because human language is so complex, language modeling can be difficult even for humans. The success of many new NLP models is due in part to the fact that they have been built upon existing technology and earlier pre-trained data sets. A good example of this is the performance of Named Entity Recognition models over time, as shown in Fig.~\ref{fig:NERPerformance}.
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=1.0\textwidth]{figures/NERPerformance.pdf}
+    \caption{
+    The performance of Named Entity Recognition models throughout the years. 
+    }
+\label{fig:NERPerformance}
+\end{figure}
+
+
+
+One of the most recent models that can handle the task of semantic sentence similarity is Google’s Universal Sentence Encoder (USE). The USE was published in 2018 by a team of Google scientists. The models were pre-trained on a wide range of unsupervised data including Wikipedia pages, question and answer forums, and discussion forums, as well as labeled data allowing supervised learning, including Stanford’s Natural Language Inference corpus. The varied data sources were selected to help make the models more transferable to a wide range of NLP tasks such as semantic sentence similarity, question classification, sentiment analysis and opinion polarity detection of news articles. The model itself encodes English sentences into high dimensional vectors called embeddings. The output of the encoding is 512-dimension vectors, one vector for each encoded sentence. These vectors can then be used to calculate the distance, or similarity, between two sentences based on their cosine distance. This cosine similarity, $\mathrm{sim}(\mathbf{u}, \mathbf{v})$ is a value calculated for two vectors of equal length $\mathbf{u}$ and $\mathbf{v}$ given between -1 and 1 and is calculated with the equation shown in Fig.~\ref{eq:CosineDistance}. The similarity effectively measures the multidimensional angle between two vectors, with values closer to 1 indicating that the vectors are similarly aligned. The cosine distance is defined as  $1 - \mathrm{sim}(\mathbf{u}, \mathbf{v})$. This can be used to determine if  text embeddings have similar properties. The closer the distance is to 1, the more dissimilar the two sentences. Likewise, the more similar the two sentences, the closer the cosine distance is to zero. Values above ones corresponds to sentences that are similar but oppositely aligned. They are uncommon and are not treated in a special way for this analysis, that is, the focus of this analysis is identifying sentences that have cosine similarity distance close to zero. An illustration of the procedure connecting sentence embedding to distance calculation and sentence similarity is shown in Fig.~\ref{fig:USEDiagram}.
+
+\begin{equation}
+\mathrm{dist}(\mathbf{u}, \mathbf{v}) = 1 - \mathrm{sim}(\mathbf{u}, \mathbf{v}) = 1 - \frac{1}{\pi}\arccos\left (\frac{\mathbf{u}\cdot \mathbf{v}}{||u|| ||v||}\right)
+\label{eq:CosineDistance}
+\end{equation}
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=1.0\textwidth]{figures/USEDiagram.pdf}
+    \caption[A diagram showing how the Universal Sentence Encoder accepts the raw text and embeds the sentences into 512 dimensional vectors]{
+    A diagram showing how the Universal Sentence Encoder accepts the raw text and embeds the sentences into 512 dimensional vectors. The vectors allow for the measurement of cosine distance between the sentences. The lower the cosine distance between two sentences, the more semantically similar.
+    }
+\label{fig:USEDiagram}
+\end{figure}
+
+
+The USE has two methods for performing the encoding. One uses a transformer architecture and the other a Deep Averaging Network (DAN). The transformer based model’s architecture is shown in Fig.~\ref{fig:Transformer}. It was developed by Google in 2017. This architecture is unique because it incorporates a concept called attention. Attention is a mechanism that allows the neural network to focus on a specific subset of features. This means that it gives more 'attention' to some parts or words in the sentence than others, similar to what the human brain does when processing speech and recognizing the most important words. The transformer model was designed to be applied to a number of transfer learning tasks such as text classification and input-response systems. While it is usually more efficient than the DAN architecture, it is often more computationally complex and time consuming.
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=0.5\textwidth]{figures/Transformer.pdf}
+    \caption{
+  The transformer-model architecture.
+    }
+\label{fig:Transformer}
+\end{figure}
+
+The alternative model uses DAN architecture. The word embeddings are averaged and fed through a deep neural network, which produces sentence embeddings.  The sentence embeddings are also vectors of length 512, the same as the attention architecture model. The main advantage to the DAN architecture is that it has a faster processing time, while still having a good performance on a number of transfer tasks. Due to its efficiency, the model that utilizes the DAN architecture was selected for the textual semantic similarity tasks performed in this research. 
+
+
+As briefly described in the methodology section, a large amount of text cleaning is performed on the job offers data set before using the USE to perform semantic similarity measurements of the job offers to the reference skills and activities data sets compiled from O*Net. Many of the raw job offers contain HTML tags and other extra special characters. An example of the raw text is show in Fig.~\ref{fig:messytext}.
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=1.0\textwidth]{figures/MessyText.pdf}
+    \caption{
+    Raw job offer 12220025, illustrating the presence of HTML tags and special characters in the job offers corpus. 
+    }
+\label{fig:messytext}
+\end{figure}
+
+The first 1000 job offers from the larger corpus are chosen for careful analysis. A function in Python is written to remove the HTML tags and special characters from the text, utlizing the BeautifulSoup HTML parsing package as described in Section~\ref{sec:software}. Another function is written utilizing Google Translate and the Python package EasyMNT to translate the job offers into English. Finally, a third function is written to tokenize the content into individual sentences. An example of this cleaned, translated, and tokenized text is shown in Fig.~\ref{fig:cleanedtext}.
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=1.0\textwidth]{figures/cleanedtext.pdf}
+    \caption{
+    The cleaned, translated, and tokenized job offer 12220025. 
+    }
+\label{fig:cleanedtext}
+\end{figure}
+
+The tokenized job offers are encoded using the USE, as are the sentences corresponding to each individual skill and activity in the O*Net-based data sets. For each job offer, the cosine distance between each sentence, and every single activity and skill is computed. The results are two matrices: one containing the distances between each sentence in the job offers data set and each activity, and the other containing the distances between each sentence in the job offers data set and each skill. In this way, it is possible to identify which sentences in the job offer have the lowest cosine distances to the skills and activities in the reference data sets. For each job offer, the top 10 skills and top 10 activities with the lowest cosine distances to the sentences in the text are ranked. This provides a way to visually inspect idea how many of these skills and activities actually are actually contained in the text of the job offer. Indeed, just because a sentence describing a skill or activity has a low cosine distance to a sentence in the job offer, it does not guarantee that that particular skill or activity is contained in the job offer. An example of a job offer and it's top 10 activity matches are shown in Fig.~\ref{fig:topten}.
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=1.0\textwidth]{figures/topten.pdf}
+    \caption[Job offer 12220025 and its top 10 activity matches based on lowest cosine distance between the sentence describing the activity, and a sentence in the job offer]{
+    Job offer 12220025 and its top 10 activity matches based on lowest cosine distance between the sentence describing the activity, and a sentence in the job offer. The left column shows the cleaned and translated text of the job offer, and the right column shows the activity matches.
+    }
+\label{fig:topten}
+\end{figure}
+
+Because not every skill or activity is contained in each job offer, it is necessary to examine the numerical values of the cosine distances and investigate if there is numerical cutoff that indicates if a skill or activity is relevant to the job. In order to get more stable and reliable skill matches which are not skewed by a single sentence in a particular job offer, top skill matches are calculated by taking the average of the three sentences with the lowest distances. A histogram comparing the cosine distance of the best match skill for each job offer to the cosine distance of all the skills matched to each job offer is shown in Fig.~\ref{fig:SkillHist1}. The histogram clearly demonstrates that the best matched skills tend to have a lower cosine distance than the entire set of all the skills. To define the numerical cutoff between 'relevant' and 'irrelevant' skills for each job offer, the average of the the mean cosine distance and +/- 1 standard deviations is plotted. The cutoff is then defined as the mean cosine minus one standard deviation, or a cosine distance of 0.8158. 
+
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=0.6\textwidth]{figures/SkillHist1.pdf}
+    \caption[Comparison of the average distance between the top three sentence matches of all skills and the top three sentence matches to the best skills]{
+    The distribution of the average distance between the top three sentence matches of all skills (shown in red), compared to the distribution of the top three sentence matches to the best skills (shown in green). The middle dashed line represents the mean cosine distance for the entire data set. The dashed lines on the left and right refer to the mean minus one standard deviation, and the mean plus one standard deviation, respectively. 
+    }
+\label{fig:SkillHist1}
+\end{figure}
+
+Fig.~\ref{fig:NumSkillsMatches} shows the distribution of the number of matched skills for each job based on the cosine distance cutoff of 0.8158. The majority of the job offers have either 0 matches or more than 10 matches. This large number of jobs without any relevant skills matches could be attributed to the fact that many of the job offers are not of an adequate length and do not describe any details about the job function. 
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=0.6\textwidth]{figures/NumSkillsMatches.pdf}
+    \caption{
+    A histogram showing the distribution of the number of relevant skills matched to the job offers using a cosine distance cutoff of 0.8158. 
+    }
+\label{fig:NumSkillsMatches}
+\end{figure}
+
+Fig.~\ref{fig:SkillGreen} shows the average cosine distance of the sentences in the job offer with the three lowest distances to the environmental skills, by environmental identity. There is a lot of overlap between the distances of the environmental jobs and non-environmental jobs. An reasonable explanation for this could be that many of the skills in reference data set are not mutually exclusive to environmentally related jobs. For example, skill such as, ``managing one's own time and the time of others,'' ``talking to others to convey information effectively,'' ``motivating, developing, and directing people as they work, identifying the best people for the job,'' and ``teaching others how to do something,'' are applicable to jobs in a variety of different sectors. 
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=0.6\textwidth]{figures/SkillGreen.pdf}
+    \caption{
+    The distribution of the average cosine distance of the sentences in the job offer with the three lowest distances to the environmental skills, by environmental identity. 
+    }
+\label{fig:SkillGreen}
+\end{figure}
+
+The same procedure was repeated to find the the relevant activities in the job offers. A histogram comparing the cosine distance of the best match activity for each job offer to the cosine distance of all the activities matched to each job offer is shown in Fig.~\ref{fig:ActivityHist1}. Again, to define the numerical cutoff between 'relevant' and 'irrelevant' activities for each job offer, the average of the the mean cosine distance and +/- 1 standard deviations is plotted. The cutoff is then defined as the mean cosine minus one standard deviation, or a cosine distance of 0.8491.
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=0.6\textwidth]{figures/ActivityHist1.pdf}
+    \caption[The distribution of the average distance of the top three sentence matches of all activities compared to the top three sentence matches to the best activities]{
+     The distribution of the average distance of the top three sentence matches of all activities (shown in red) compared to the distribution of the top three sentence matches to the best activities (shown in green). The middle dashed line represents the mean cosine distance for the entire data set. The dashed lines on the left and right refer to the mean minus one standard deviation, and the mean plus one standard deviation, respectively. 
+    }
+\label{fig:ActivityHist1}
+\end{figure}
+
+Fig.~\ref{fig:NumSkillsMatches} shows the distribution of the number of matched activities for each job based on the cosine distance cutoff of 0.8491. The majority of the job offers have either 0 matches or more than 10 matches, similarly to the number of skills matches.
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=0.6\textwidth]{figures/NumActivitiesMatches.pdf}
+    \caption{
+    The distribution of the number of relevant activities matched to the job offers using a cosine distance cutoff of 0.8491. 
+    }
+\label{fig:NumActivityMatches}
+\end{figure}
+
+Furthermore, Fig.~\ref{fig:ActivityGreen} shows the average cosine distance of the sentences in the job offer with the three lowest distances, by environmental identity. Though there is some overlap, in general the environmentally related jobs have a lower cosine distances to the activities in the reference data set, meaning the environmentally related jobs are more semantically similar. This is an encouraging result and suggests the neural net classifier indeed is able to identify job offers that contain environmental activities as environmental in nature. 
+
+\begin{figure}[htbp]
+  \centering
+    \includegraphics[width=0.6\textwidth]{figures/ActivityGreen.pdf}
+    \caption{
+    The average cosine distance of the sentences in the job offer with the three lowest distances to the environmental activities, by environmental identity. 
+    }
+\label{fig:ActivityGreen}
+\end{figure}
+
+
+
+
+
+

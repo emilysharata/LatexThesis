@@ -1,0 +1,46 @@
+\section{Software and analysis tools}
+\label{sec:software}
+The primary focus of this research work is building a software infrastructure to classify and categorize environmentally-focused jobs. The programming language Python is used to develop software to perform all steps of processing and analyzing the text data and interpreting the results. The software library developed for this task can be found in Ref.~\cite{emilysharata}. Common functions for processing and cleaning the data or stored in the Methods directory, and individual Jupyter notebooks are used to drive the individual tasks of the project: categorizing job offers as environmentally-focused or not, associating offers to specific skills, and associated job offers to tasks.
+
+The basic tasks of the software are:
+
+\begin{itemize}
+\item Read the available job offers data from a JSON file format.
+
+\item Clean the job description text of non-textual characters and symbols.
+
+\item Convert the text into numeric data necessary for the machine learning tasks.
+
+\item Perform analysis, associating the numeric encoding of the job offers to activities and skills, and using machine-learning algorithms to categorize the jobs.
+
+\item Interpret the results, assessing performance numerically and/or qualitatively.
+\end{itemize}
+
+The following Python software libraries are utilized to aid these tasks.
+
+\begin{itemize}
+    \item \textbf{pandas}~\cite{reback2020pandas,mckinney-proc-scipy-2010} -- A multifunctional library that assists with loading and reading a variety of input file formats, including JSON and CSV files, building dataframes, and handling missing data. This library is used extensively to provide a convenient and flexible interface to the data for processing.
+
+    \item \textbf{googletrans} -- An implementation of the Google Translate web API, this package queries the Google Translate webpage to build translations. It is used to convert the job offers in other languages, especially German, French, or Italian, into English.
+
+    \item \textbf{BeautifulSoup}~\cite{richardson2007beautiful} -- A Python library for pulling data out of HTML and XML files. It is used to clean the job offers of HTML tags and non-alphanumeric characters, as the text has generally been scraped from webpages and may contain superfluous characters.
+
+    \item \textbf{EasyNMT}~\cite{TiedemannThottingal:EAMT2020} -- EasyNMT stands for easy neural machine translation. This package provides machine translation and detection for over 150 languages. This package is slower than googletrans, but it is more robust, so it is used to translate job offers into English when the googletrans package fails
+
+    \item \textbf{NumPy}~\cite{harris2020array} - NumPy stands for numerical Python. This package was designed to facilitate the use of arrays in Python. It is used to process arrays and for many statistical operations.
+    
+    \item \textbf{TensorFlow}~\cite{tensorflow2015-whitepaper} - Created by Google, TensorFlow is a package created for fast and efficient numerical computing. It is used in tandem with the Keras package to build machine learning models.
+
+    \item \textbf{Keras}~\cite{chollet2015keras} - A library that provides an interface for building artificial neural neural networks, which will be discussed in more detail later in this thesis. The library has the capability of deploying many common components of neural networks including layer configurations, activation functions, and optimizers. It is used to build the neural network used for environmental job categorization described in Section~\ref{sec:classification}.
+    
+    \item \textbf{Universal Sentence Encoder}~\cite{DBLP:journals/corr/abs-1803-11175} - A pre-trained model that encodes text into high dimensional numerical vectors that can be used for textual semantic similarity, clustering, information retrieval, and other natural language tasks.  
+    
+    \item \textbf{TensorFlow Hub}~\cite{tensorflow2015-whitepaper} - A repository that houses a number of pre-trained models, including the Universal Sentence Encoder, ready for practical application. 
+    
+    \item \textbf{SciPy}~\cite{2020SciPy-NMeth} - A Python library that consists of a large suite of tools for statistical analysis and machine learning. It is used for statistical operations, especially for the cosine distance calculation used for the sentence similarity task of Section~\ref{sec:activites}.  
+    
+    \item \textbf{matplotlib}~\cite{4160265} -- A graphics package used to visualize and explore the data set.
+    
+    \item \textbf{Jupyter notebook}~\cite{Kluyver2016jupyter} -- A visual interface to Python, used to provide a convenient and visual work environment analogous to RStudio.
+    
+\end{itemize}
